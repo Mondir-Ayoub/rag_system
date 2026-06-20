@@ -1,0 +1,13 @@
+__pycache__/
+
+*.pyc
+
+.venv/
+
+.env
+
+qdrant-data/
+
+.pytest_cache/
+
+.vscode/

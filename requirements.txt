@@ -1,0 +1,17 @@
+python-dotenv
+
+qdrant-client
+
+docling
+
+sentence-transformers
+
+transformers
+
+torch
+
+ollama
+
+streamlit
+
+llama-index
