@@ -9,6 +9,9 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import (
     Distance,
     VectorParams,
+    Filter,
+    FieldCondition,
+    MatchValue,
 )
 
 from config.settings import (
@@ -102,3 +105,28 @@ def count_points() -> int:
     )
 
     return result.count
+
+
+def document_exists(
+    document_id: str,
+) -> bool:
+    """
+    Check if document already exists.
+    """
+
+    points, _ = client.scroll(
+        collection_name=COLLECTION_NAME,
+        scroll_filter=Filter(
+            must=[
+                FieldCondition(
+                    key="document_id",
+                    match=MatchValue(
+                        value=document_id,
+                    ),
+                )
+            ]
+        ),
+        limit=1,
+    )
+
+    return len(points) > 0

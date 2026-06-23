@@ -8,6 +8,10 @@ from retrieval.retriever import (
     retrieve_contexts,
 )
 
+from retrieval.reranker import (
+    rerank_contexts,
+)
+
 from generation.prompt_builder import (
     build_prompt,
 )
@@ -30,9 +34,27 @@ def ask(
         "Starting RAG pipeline"
     )
 
-    contexts = retrieve_contexts(
-        query=question,
-        limit=3,
+    retrieved_contexts = (
+        retrieve_contexts(
+            query=question,
+            limit=10,
+        )
+    )
+
+    logger.info(
+        "Retrieved contexts: %s",
+        len(retrieved_contexts),
+    )
+
+    contexts = rerank_contexts(
+        question=question,
+        contexts=retrieved_contexts,
+        top_k=3,
+    )
+
+    logger.info(
+        "Reranked contexts: %s",
+        len(contexts),
     )
 
     prompt = build_prompt(

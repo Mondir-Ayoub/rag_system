@@ -2,16 +2,38 @@
 Chunk metadata management.
 """
 
+import hashlib
+
 from datetime import datetime
-from uuid import uuid4
 
 
-def generate_document_id() -> str:
+def generate_document_id(
+    text: str,
+) -> str:
     """
-    Generate a unique document id.
+    Generate deterministic document id.
     """
 
-    return str(uuid4())
+    return hashlib.sha256(
+        text.encode("utf-8")
+    ).hexdigest()
+
+
+def generate_chunk_id(
+    document_id: str,
+    chunk: str,
+) -> str:
+    """
+    Generate deterministic chunk id.
+    """
+
+    content = (
+        document_id + chunk
+    )
+
+    return hashlib.sha256(
+        content.encode("utf-8")
+    ).hexdigest()
 
 
 def build_chunk_records(
@@ -29,7 +51,10 @@ def build_chunk_records(
 
         records.append(
             {
-                "chunk_id": str(uuid4()),
+                "chunk_id": generate_chunk_id(
+                    document_id,
+                    chunk,
+                ),
                 "text": chunk,
                 "metadata": {
                     "document_id": document_id,

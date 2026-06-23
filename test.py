@@ -1,4 +1,5 @@
-from sentence_transformers import SentenceTransformer
+from vectorstore.qdrant_store import client
 
-model = SentenceTransformer("BAAI/bge-m3")
-print("MODEL LOADED OK")
+client.delete_collection("documents")
+
+print("Collection supprimée")

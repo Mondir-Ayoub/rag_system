@@ -2,9 +2,11 @@
 Convert records into Qdrant points.
 """
 
-from uuid import UUID
+from uuid import uuid4
 
-from qdrant_client.models import PointStruct
+from qdrant_client.models import (
+    PointStruct,
+)
 
 
 def build_points(
@@ -24,13 +26,12 @@ def build_points(
         points.append(
             PointStruct(
                 id=str(
-                    UUID(
-                        record["chunk_id"]
-                    )
+                    uuid4()
                 ),
                 vector=embedding,
                 payload={
                     "text": record["text"],
+                    "chunk_id": record["chunk_id"],
                     **record["metadata"],
                 },
             )
