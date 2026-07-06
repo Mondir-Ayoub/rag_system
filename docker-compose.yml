@@ -1,13 +1,57 @@
+# services:
+#   qdrant:
+#     image: qdrant/qdrant
+
+#     container_name: qdrant
+
+#     ports:
+#       - "6333:6333"
+
+#     volumes:
+#       - ./qdrant-data:/qdrant/storage
+
+#     restart: unless-stopped
+
+
 services:
   qdrant:
     image: qdrant/qdrant
-
     container_name: qdrant
-
     ports:
       - "6333:6333"
-
     volumes:
       - ./qdrant-data:/qdrant/storage
+    restart: unless-stopped
 
+  postgres:
+    image: postgres:16
+    container_name: papermerge-postgres
+    environment:
+      POSTGRES_DB: papermerge
+      POSTGRES_USER: papermerge
+      POSTGRES_PASSWORD: papermerge_password
+    volumes:
+      - ./papermerge-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: papermerge-redis
+    volumes:
+      - ./papermerge-redis-data:/data
+    restart: unless-stopped
+
+  papermerge:
+    image: ghcr.io/papermerge/papermerge:latest
+    container_name: papermerge
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "12000:80"
+    environment:
+      PAPERMERGE__DATABASE__URL: postgresql://papermerge:papermerge_password@postgres:5432/papermerge
+      PAPERMERGE__REDIS__URL: redis://redis:6379/0
+    volumes:
+      - ./papermerge-data:/var/media/pmg
     restart: unless-stopped

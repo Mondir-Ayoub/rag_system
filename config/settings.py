@@ -45,3 +45,7 @@ OLLAMA_MODEL = os.getenv(
 VECTOR_SIZE = int(
     os.getenv("VECTOR_SIZE", 1024)
 )
+
+HISTORY_TURNS = int(
+    os.getenv("HISTORY_TURNS", 2)
+)

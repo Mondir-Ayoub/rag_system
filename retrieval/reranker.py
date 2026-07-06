@@ -87,7 +87,7 @@ from core.model_registry import (
 def rerank_contexts(
     question: str,
     contexts: list[str],
-    top_k: int = 3,
+    top_k: int = 5,
 ) -> list[str]:
     """
     Rerank retrieved contexts.
@@ -124,3 +124,87 @@ def rerank_contexts(
         for context, _
         in ranked[:top_k]
     ]
+
+# """
+# Rerank retrieved contexts using BGE-Reranker-v2.
+# """
+
+# import logging
+
+# from sentence_transformers import CrossEncoder
+
+# logger = logging.getLogger(__name__)
+
+# _MODEL = None
+
+
+# def get_reranker():
+#     """
+#     Load reranker only once.
+#     """
+
+#     global _MODEL
+
+#     if _MODEL is None:
+
+#         logger.info(
+#             "Loading reranker model..."
+#         )
+
+#         _MODEL = CrossEncoder(
+#             "BAAI/bge-reranker-v2-m3"
+#         )
+
+#         logger.info(
+#             "Reranker model loaded"
+#         )
+
+#     return _MODEL
+
+
+# def rerank_contexts(
+#     question: str,
+#     contexts: list[dict],
+#     top_k: int = 5,
+# ) -> list[dict]:
+#     """
+#     Rerank retrieved contexts while preserving metadata.
+#     """
+
+#     if not contexts:
+#         return []
+
+#     model = get_reranker()
+
+#     pairs = [
+#         (
+#             question,
+#             context["text"],
+#         )
+#         for context in contexts
+#     ]
+
+#     scores = model.predict(
+#         pairs
+#     )
+
+#     ranked = sorted(
+#         zip(
+#             contexts,
+#             scores,
+#         ),
+#         key=lambda x: x[1],
+#         reverse=True,
+#     )
+
+#     results = []
+
+#     for context, score in ranked[:top_k]:
+
+#         context["rerank_score"] = float(score)
+
+#         results.append(
+#             context
+#         )
+
+#     return results
